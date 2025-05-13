@@ -1,0 +1,1607 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Carteira Financeira API",
+        "description": "API para gerenciamento de carteira financeira",
+        "contact": {
+            "name": "Suporte API",
+            "email": "admin@example.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/cadastrar": {
+            "post": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Registra um novo usuário no sistema",
+                "description": "Registra um novo usuário.",
+                "operationId": "9cfafe40f38f40316cbbbe9452a5517c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "password_confirmation",
+                                    "phone",
+                                    "document"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "João Silva"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "joao@email.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "senha123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "senha123"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "11999999999"
+                                    },
+                                    "document": {
+                                        "type": "string",
+                                        "example": "12345678901"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuário criado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "João Silva"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "joao@email.com"
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "example": "11999999999"
+                                                },
+                                                "document": {
+                                                    "type": "string",
+                                                    "example": "12345678901"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "mensagem": {
+                                            "type": "string",
+                                            "example": "O email já está em uso."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Autentica um usuário e retorna o token de acesso",
+                "description": "Autentica o usuário e cria token.",
+                "operationId": "64c17bd97d94fdaf7e5fb4f4b0a6f688",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "joao@email.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "senha123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login realizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "João Silva"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "joao@email.com"
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "example": "11999999999"
+                                                },
+                                                "document": {
+                                                    "type": "string",
+                                                    "example": "12345678901"
+                                                },
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "1|abcdef123456..."
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Credenciais inválidas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "mensagem": {
+                                            "type": "string",
+                                            "example": "Credenciais inválidas"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/perfil": {
+            "get": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Retorna os dados do usuário autenticado, incluindo os dados da conta",
+                "description": "Obtém o usuário autenticado.",
+                "operationId": "78bc427fb1a9ae6e3602dd4d7c082b69",
+                "responses": {
+                    "200": {
+                        "description": "Dados do usuário retornados com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "João Silva"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "joao@email.com"
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "example": "11999999999"
+                                                },
+                                                "document": {
+                                                    "type": "string",
+                                                    "example": "12345678901"
+                                                },
+                                                "conta": {
+                                                    "description": "Dados da conta vinculada ao usuário",
+                                                    "properties": {
+                                                        "id": {
+                                                            "description": "ID público da conta",
+                                                            "type": "string",
+                                                            "example": "c1a2b3c4-d5e6-7890-abcd-1234567890ef"
+                                                        },
+                                                        "user_id": {
+                                                            "description": "ID público do usuário",
+                                                            "type": "string",
+                                                            "example": "123e4567-e89b-12d3-a456-426614174000"
+                                                        },
+                                                        "balance": {
+                                                            "description": "Saldo atual da conta",
+                                                            "type": "number",
+                                                            "format": "float",
+                                                            "example": 1000.5
+                                                        },
+                                                        "status": {
+                                                            "description": "Status atual da conta",
+                                                            "type": "string",
+                                                            "example": "ativa"
+                                                        },
+                                                        "created_at": {
+                                                            "description": "Data de criação",
+                                                            "type": "string",
+                                                            "format": "date-time",
+                                                            "example": "2024-05-01T12:00:00Z"
+                                                        },
+                                                        "updated_at": {
+                                                            "description": "Data de última atualização",
+                                                            "type": "string",
+                                                            "format": "date-time",
+                                                            "example": "2024-05-10T15:30:00Z"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autorizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Revoga o token de acesso do usuário atual",
+                "description": "Desconecta o usuário (revoga o token).",
+                "operationId": "640784fea1cbcc077f936d2f9e623d75",
+                "responses": {
+                    "200": {
+                        "description": "Logout realizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "mensagem": {
+                                            "type": "string",
+                                            "example": "Logout realizado com sucesso"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autorizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/contas/{publicId}": {
+            "get": {
+                "tags": [
+                    "Contas"
+                ],
+                "summary": "Busca detalhes de uma conta",
+                "description": "Retorna os detalhes completos de uma conta específica",
+                "operationId": "41fc430090f7e4e885db777a5ce3aa09",
+                "parameters": [
+                    {
+                        "name": "publicId",
+                        "in": "path",
+                        "description": "ID público da conta",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalhes da conta retornados com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "description": "ID público da conta",
+                                            "type": "string"
+                                        },
+                                        "user_id": {
+                                            "description": "ID público do usuário",
+                                            "type": "string"
+                                        },
+                                        "balance": {
+                                            "description": "Saldo atual da conta",
+                                            "type": "number",
+                                            "format": "float"
+                                        },
+                                        "status": {
+                                            "description": "Status atual da conta",
+                                            "type": "string"
+                                        },
+                                        "created_at": {
+                                            "description": "Data de criação",
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "updated_at": {
+                                            "description": "Data de última atualização",
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Conta não encontrada"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/contas/{publicId}/depositar": {
+            "post": {
+                "tags": [
+                    "Contas"
+                ],
+                "summary": "Realiza um depósito direto na conta",
+                "description": "Efetua um depósito direto em uma conta específica",
+                "operationId": "e56245e42f35de605642ab40809b5340",
+                "parameters": [
+                    {
+                        "name": "publicId",
+                        "in": "path",
+                        "description": "ID público da conta",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "amount"
+                                ],
+                                "properties": {
+                                    "amount": {
+                                        "description": "Valor do depósito",
+                                        "type": "number",
+                                        "format": "float"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Depósito realizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Conta"
+                                        },
+                                        "meta": {
+                                            "oneOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/MetaPaginacao"
+                                                }
+                                            ],
+                                            "nullable": true,
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação dos dados"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/contas/{publicId}/sacar": {
+            "post": {
+                "tags": [
+                    "Contas"
+                ],
+                "summary": "Realiza um saque da conta",
+                "description": "Efetua um saque de uma conta específica",
+                "operationId": "d0bd911a416e291e973cdc557764104b",
+                "parameters": [
+                    {
+                        "name": "publicId",
+                        "in": "path",
+                        "description": "ID público da conta",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "amount"
+                                ],
+                                "properties": {
+                                    "amount": {
+                                        "description": "Valor do saque",
+                                        "type": "number",
+                                        "format": "float"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Saque realizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Conta"
+                                        },
+                                        "meta": {
+                                            "oneOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/MetaPaginacao"
+                                                }
+                                            ],
+                                            "nullable": true,
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação ou saldo insuficiente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "mensagem": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/notificacoes": {
+            "get": {
+                "tags": [
+                    "Notificações"
+                ],
+                "summary": "Lista todas as notificações",
+                "description": "Retorna uma lista paginada de todas as notificações do usuário autenticado",
+                "operationId": "4aa3bb6fa5b32347e2907d59a82406c6",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Número de itens por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de notificações retornada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Notificacao"
+                                            }
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/MetaPaginacao"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/notificacoes/nao-lidas": {
+            "get": {
+                "tags": [
+                    "Notificações"
+                ],
+                "summary": "Lista notificações não lidas",
+                "description": "Retorna uma lista paginada das notificações não lidas do usuário autenticado",
+                "operationId": "98b7b54cf2760d43a06b0edd24c177e0",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Número de itens por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de notificações não lidas retornada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Notificacao"
+                                            }
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/MetaPaginacao"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/notificacoes/{id}/ler": {
+            "post": {
+                "tags": [
+                    "Notificações"
+                ],
+                "summary": "Marca notificação como lida",
+                "description": "Marca uma notificação específica como lida",
+                "operationId": "a0144555b92c995508e0208d359d7919",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da notificação",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Notificação marcada como lida com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "mensagem": {
+                                            "type": "string",
+                                            "example": "Notificação marcada como lida"
+                                        },
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Acesso não autorizado"
+                    },
+                    "404": {
+                        "description": "Notificação não encontrada"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/notificacoes/ler-todas": {
+            "post": {
+                "tags": [
+                    "Notificações"
+                ],
+                "summary": "Marca todas as notificações como lidas",
+                "description": "Marca todas as notificações do usuário autenticado como lidas",
+                "operationId": "9a42897922b214334d0ec133161b9cf3",
+                "responses": {
+                    "200": {
+                        "description": "Notificações marcadas como lidas com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "mensagem": {
+                                            "type": "string",
+                                            "example": "Todas as notificações foram marcadas como lidas"
+                                        },
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/notificacoes/nao-lidas/quantidade": {
+            "get": {
+                "tags": [
+                    "Notificações"
+                ],
+                "summary": "Conta notificações não lidas",
+                "description": "Retorna o número total de notificações não lidas do usuário autenticado",
+                "operationId": "0344e45d66d8359f1023356e7cad669e",
+                "responses": {
+                    "200": {
+                        "description": "Quantidade de notificações não lidas retornada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "quantidade": {
+                                            "type": "integer",
+                                            "example": 5
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/contas/{publicIdConta}/transacoes": {
+            "get": {
+                "tags": [
+                    "Transações"
+                ],
+                "summary": "Lista transações de uma conta",
+                "description": "Retorna uma lista paginada de todas as transações associadas a uma conta específica",
+                "operationId": "e49ac1003580aa11ba0f131966000a81",
+                "parameters": [
+                    {
+                        "name": "publicIdConta",
+                        "in": "path",
+                        "description": "ID público da conta",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de transações retornada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                                                    },
+                                                    "account_id": {
+                                                        "type": "string",
+                                                        "example": "550e8400-e29b-41d4-a716-446655440001"
+                                                    },
+                                                    "type": {
+                                                        "type": "string",
+                                                        "example": "deposit"
+                                                    },
+                                                    "amount": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 100.5
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "example": "completed"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "Depósito via PIX"
+                                                    },
+                                                    "reference_id": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "error_message": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "pagination": {
+                                                    "properties": {
+                                                        "total": {
+                                                            "type": "integer",
+                                                            "example": 50
+                                                        },
+                                                        "count": {
+                                                            "type": "integer",
+                                                            "example": 10
+                                                        },
+                                                        "per_page": {
+                                                            "type": "integer",
+                                                            "example": 10
+                                                        },
+                                                        "current_page": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "total_pages": {
+                                                            "type": "integer",
+                                                            "example": 5
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Conta não encontrada"
+                    },
+                    "422": {
+                        "description": "Erro de validação ou processamento"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/transacoes/{publicId}": {
+            "get": {
+                "tags": [
+                    "Transações"
+                ],
+                "summary": "Busca detalhes de uma transação",
+                "description": "Retorna os detalhes completos de uma transação específica",
+                "operationId": "4a932818029165bc5c8b8e99b03ccb6e",
+                "parameters": [
+                    {
+                        "name": "publicId",
+                        "in": "path",
+                        "description": "ID público da transação",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalhes da transação retornados com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                                                },
+                                                "account_id": {
+                                                    "type": "string",
+                                                    "example": "550e8400-e29b-41d4-a716-446655440001"
+                                                },
+                                                "type": {
+                                                    "type": "string",
+                                                    "example": "deposit"
+                                                },
+                                                "amount": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 100.5
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "completed"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Depósito via PIX"
+                                                },
+                                                "reference_id": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "error_message": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Transação não encontrada"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/transacoes/depositar": {
+            "post": {
+                "tags": [
+                    "Transações"
+                ],
+                "summary": "Realiza um depósito",
+                "description": "Cria e enfileira uma nova transação de depósito para processamento",
+                "operationId": "307910bab8a566ad94b24e6e72bf0cd7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "to_account_id",
+                                    "amount"
+                                ],
+                                "properties": {
+                                    "to_account_id": {
+                                        "description": "ID público da conta de destino",
+                                        "type": "string"
+                                    },
+                                    "amount": {
+                                        "description": "Valor do depósito",
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "description": {
+                                        "description": "Descrição opcional do depósito",
+                                        "type": "string"
+                                    },
+                                    "transaction_key": {
+                                        "description": "Chave UUID única da transação",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Depósito aceito para processamento",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Depósito enfileirado para processamento"
+                                        },
+                                        "amount": {
+                                            "type": "number",
+                                            "format": "float"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "pending"
+                                        },
+                                        "transaction_key": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação dos dados"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/transacoes/transferir": {
+            "post": {
+                "tags": [
+                    "Transações"
+                ],
+                "summary": "Realiza uma transferência entre contas",
+                "description": "Cria e enfileira uma nova transação de transferência para processamento",
+                "operationId": "6e6bd8a9a28274a2038f837bf6ab79d1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "from_account_id",
+                                    "to_account_id",
+                                    "amount",
+                                    "transaction_key"
+                                ],
+                                "properties": {
+                                    "from_account_id": {
+                                        "description": "ID público da conta de origem",
+                                        "type": "string"
+                                    },
+                                    "to_account_id": {
+                                        "description": "ID público da conta de destino",
+                                        "type": "string"
+                                    },
+                                    "amount": {
+                                        "description": "Valor da transferência",
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "description": {
+                                        "description": "Descrição opcional da transferência",
+                                        "type": "string"
+                                    },
+                                    "transaction_key": {
+                                        "description": "Chave única da transação",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Transferência aceita para processamento",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Transferência enfileirada para processamento"
+                                        },
+                                        "from_account_id": {
+                                            "type": "string"
+                                        },
+                                        "to_account_id": {
+                                            "type": "string"
+                                        },
+                                        "amount": {
+                                            "type": "number",
+                                            "format": "float"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "pending"
+                                        },
+                                        "transaction_key": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação ou saldo insuficiente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "saldo_insuficiente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/transacoes/{publicId}/estornar": {
+            "post": {
+                "tags": [
+                    "Transações"
+                ],
+                "summary": "Solicita estorno de uma transação",
+                "description": "Cria e enfileira uma solicitação de estorno para uma transação específica",
+                "operationId": "c521f5228ab15709da09131632cb653c",
+                "parameters": [
+                    {
+                        "name": "publicId",
+                        "in": "path",
+                        "description": "ID público da transação a ser estornada",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "reason"
+                                ],
+                                "properties": {
+                                    "reason": {
+                                        "description": "Motivo do estorno",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Estorno aceito para processamento",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Estorno enfileirado para processamento"
+                                        },
+                                        "original_transaction_id": {
+                                            "type": "string"
+                                        },
+                                        "amount": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "pending"
+                                        },
+                                        "original_transaction_type": {
+                                            "type": "string"
+                                        },
+                                        "request_date": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "transaction_key": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação ou transação não pode ser estornada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "reason": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Transação não encontrada"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Conta": {
+                "title": "Conta",
+                "description": "Modelo de conta bancária conforme resposta da API",
+                "properties": {
+                    "id": {
+                        "description": "ID público da conta",
+                        "type": "string",
+                        "example": "c1a2b3c4-d5e6-7890-abcd-1234567890ef"
+                    },
+                    "user_id": {
+                        "description": "ID público do usuário",
+                        "type": "string",
+                        "example": "u1b2c3d4-e5f6-7890-abcd-1234567890ef"
+                    },
+                    "balance": {
+                        "description": "Saldo atual da conta",
+                        "type": "number",
+                        "format": "float",
+                        "example": 1500.75
+                    },
+                    "status": {
+                        "description": "Status atual da conta. Valores possíveis: 'active', 'inactive'",
+                        "type": "string",
+                        "example": "active"
+                    },
+                    "created_at": {
+                        "description": "Data de criação",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-05-01T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "description": "Data da última atualização",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-05-10T15:30:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Notificacao": {
+                "title": "Notificação",
+                "description": "Modelo de notificação conforme resposta da API",
+                "properties": {
+                    "id": {
+                        "description": "ID interno da notificação",
+                        "type": "integer",
+                        "example": 101
+                    },
+                    "tipo": {
+                        "description": "Tipo da notificação",
+                        "type": "string",
+                        "example": "info"
+                    },
+                    "titulo": {
+                        "description": "Título da notificação",
+                        "type": "string",
+                        "example": "Saldo atualizado"
+                    },
+                    "mensagem": {
+                        "description": "Conteúdo da notificação",
+                        "type": "string",
+                        "example": "Seu saldo foi atualizado com sucesso."
+                    },
+                    "dados": {
+                        "description": "Dados adicionais da notificação",
+                        "type": "string",
+                        "example": {
+                            "valor": 1500.75
+                        }
+                    },
+                    "lida": {
+                        "description": "Se a notificação foi lida",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "enviada": {
+                        "description": "Se a notificação foi enviada",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "canal": {
+                        "description": "Canal de envio da notificação",
+                        "type": "string",
+                        "example": "email"
+                    },
+                    "data_enviada": {
+                        "description": "Data de envio da notificação",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-05-10T16:00:00Z",
+                        "nullable": true
+                    },
+                    "recurso_tipo": {
+                        "description": "Tipo do recurso relacionado",
+                        "type": "string",
+                        "example": "conta"
+                    },
+                    "recurso_id": {
+                        "description": "ID do recurso relacionado",
+                        "type": "string",
+                        "example": "c1a2b3c4-d5e6-7890-abcd-1234567890ef"
+                    },
+                    "created_at": {
+                        "description": "Data de criação",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-05-10T15:55:00Z"
+                    },
+                    "updated_at": {
+                        "description": "Data da última atualização",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-05-10T16:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Transacao": {
+                "title": "Transação",
+                "description": "Modelo de transação conforme resposta da API",
+                "properties": {
+                    "id": {
+                        "description": "ID público da transação",
+                        "type": "string",
+                        "example": "t1a2b3c4-d5e6-7890-abcd-1234567890ef"
+                    },
+                    "account_id": {
+                        "description": "ID público da conta associada",
+                        "type": "string",
+                        "example": "c1a2b3c4-d5e6-7890-abcd-1234567890ef"
+                    },
+                    "type": {
+                        "description": "Tipo da transação. Valores possíveis: 'transfer', 'deposit', 'reversal'",
+                        "type": "string",
+                        "example": "transfer"
+                    },
+                    "amount": {
+                        "description": "Valor da transação",
+                        "type": "number",
+                        "format": "float",
+                        "example": 500
+                    },
+                    "status": {
+                        "description": "Status da transação. Valores possíveis: 'pending', 'completed', 'failed', 'reversed'",
+                        "type": "string",
+                        "example": "pending"
+                    },
+                    "description": {
+                        "description": "Descrição da transação",
+                        "type": "string",
+                        "example": "Depósito realizado com sucesso."
+                    },
+                    "reference_id": {
+                        "description": "ID de referência (pode ser null)",
+                        "type": "string",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "description": "Data de criação",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-05-10T14:00:00Z"
+                    },
+                    "updated_at": {
+                        "description": "Data da última atualização",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-05-10T14:05:00Z"
+                    },
+                    "error_message": {
+                        "description": "Mensagem de erro se houver falha",
+                        "type": "string",
+                        "example": null,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "MetaPaginacao": {
+                "title": "Metadados de Paginação",
+                "description": "Informações sobre a paginação dos resultados",
+                "properties": {
+                    "current_page": {
+                        "description": "Página atual",
+                        "type": "integer"
+                    },
+                    "per_page": {
+                        "description": "Itens por página",
+                        "type": "integer"
+                    },
+                    "total": {
+                        "description": "Total de itens",
+                        "type": "integer"
+                    },
+                    "total_pages": {
+                        "description": "Total de páginas",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Autenticação",
+            "description": "Endpoints para gerenciamento de autenticação de usuários"
+        },
+        {
+            "name": "Contas",
+            "description": "Endpoints para gerenciamento de contas bancárias"
+        },
+        {
+            "name": "Notificações",
+            "description": "Endpoints para gerenciamento de notificações do usuário"
+        },
+        {
+            "name": "Transações",
+            "description": "Endpoints para gerenciamento de transações financeiras"
+        }
+    ],
+    "security": [
+        {
+            "sanctum": []
+        }
+    ]
+}

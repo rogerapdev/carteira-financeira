@@ -1,0 +1,78 @@
+{{ define "email.default.subject" }}
+[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .GroupLabels.SortedPairs.Values | join " " }} {{ if gt (len .CommonLabels) (len .GroupLabels) }}({{ with .CommonLabels.Remove .GroupLabels.Names }}{{ .Values | join " " }}{{ end }}){{ end }}
+{{ end }}
+
+{{ define "email.default.html" }}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Alerta do Sistema</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .header {
+      background-color: {{ if eq .Status "firing" }}#dc3545{{ else }}#28a745{{ end }};
+      color: white;
+      padding: 10px;
+      border-radius: 3px;
+      margin-bottom: 20px;
+    }
+    .alert-info {
+      margin-bottom: 15px;
+      padding: 10px;
+      background-color: #f8f9fa;
+      border-left: 4px solid #6c757d;
+    }
+    .label {
+      font-weight: bold;
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2 style="margin: 0;">{{ .Status | toUpper }} - {{ .GroupLabels.SortedPairs.Values | join " " }}</h2>
+    </div>
+
+    {{ if gt (len .Alerts.Firing) 0 }}
+    <h3>Alertas Ativos ({{ .Alerts.Firing | len }}):</h3>
+    {{ range .Alerts.Firing }}
+    <div class="alert-info">
+      <p><span class="label">Alerta:</span>{{ .Labels.alertname }}</p>
+      <p><span class="label">Severidade:</span>{{ .Labels.severity }}</p>
+      <p><span class="label">Instância:</span>{{ .Labels.instance }}</p>
+      <p><span class="label">Descrição:</span>{{ .Annotations.description }}</p>
+      <p><span class="label">Início:</span>{{ .StartsAt.Format "02/01/2006 15:04:05" }}</p>
+    </div>
+    {{ end }}
+    {{ end }}
+
+    {{ if gt (len .Alerts.Resolved) 0 }}
+    <h3>Alertas Resolvidos ({{ .Alerts.Resolved | len }}):</h3>
+    {{ range .Alerts.Resolved }}
+    <div class="alert-info">
+      <p><span class="label">Alerta:</span>{{ .Labels.alertname }}</p>
+      <p><span class="label">Severidade:</span>{{ .Labels.severity }}</p>
+      <p><span class="label">Instância:</span>{{ .Labels.instance }}</p>
+      <p><span class="label">Resolvido em:</span>{{ .EndsAt.Format "02/01/2006 15:04:05" }}</p>
+    </div>
+    {{ end }}
+    {{ end }}
+  </div>
+</body>
+</html>
+{{ end }}

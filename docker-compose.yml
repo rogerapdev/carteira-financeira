@@ -1,0 +1,194 @@
+version: '3'
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile
+    volumes:
+      - ./backend:/var/www/html
+    command: >
+      sh -c "composer install &&
+             php artisan key:generate --force &&
+             php-fpm"
+    environment:
+      - RUN_MIGRATIONS=true
+      - RUN_SEEDS=true
+      - RUN_HORIZON=true
+      - APP_URL=http://localhost:8001
+    depends_on:
+      - db
+      - redis
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+          cpus: '1.5'
+    networks:
+      - wallet-network
+    labels:
+      - "prometheus.scrape=true"
+      - "prometheus.port=8000"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "4200:4200"
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+          cpus: '1.5'
+    networks:
+      - wallet-network
+
+  web:
+    image: nginx:alpine
+    ports:
+      - "8000:80"  # Frontend
+      - "8001:81"  # Backend
+    volumes:
+      - ./backend:/var/www/html
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - api
+      - frontend
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+          cpus: '1.5'
+    networks:
+      - wallet-network
+
+  db:
+    image: postgres:14
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: carteira_financeira
+      POSTGRES_USER: carteira_user
+      POSTGRES_PASSWORD: carteira_password
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+          cpus: '1.5'
+    networks:
+      - wallet-network
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+          cpus: '1.5'
+    networks:
+      - wallet-network
+
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./docker/prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+          cpus: '1.5'
+    networks:
+      - wallet-network
+
+  grafana:
+    image: grafana/grafana:10.0.3
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+          cpus: '1.5'
+    networks:
+      - wallet-network
+
+  node-exporter:
+    image: prom/node-exporter:v1.6.0
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+          cpus: '1.5'
+    networks:
+      - wallet-network
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.2
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+          cpus: '1.5'
+    networks:
+      - wallet-network
+
+  alertmanager:
+    image: prom/alertmanager:v0.25.0
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./docker/alertmanager:/etc/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+          cpus: '1.5'
+    networks:
+      - wallet-network
+
+networks:
+  wallet-network:
+    driver: bridge
+
+volumes:
+  dbdata:
+  prometheus_data:
+  grafana_data:

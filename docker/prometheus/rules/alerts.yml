@@ -1,0 +1,38 @@
+groups:
+  - name: carteira_alerts
+    rules:
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Alta taxa de erros na API"
+          description: "Taxa de erros 5xx está acima de 10% nos últimos 5 minutos"
+
+      - alert: SlowResponseTime
+        expr: rate(http_request_duration_seconds_sum[5m]) / rate(http_request_duration_seconds_count[5m]) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Tempo de resposta elevado"
+          description: "Tempo médio de resposta está acima de 2 segundos"
+
+      - alert: HighTransactionFailureRate
+        expr: rate(transaction_failures_total[5m]) / rate(transactions_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Alta taxa de falha em transações"
+          description: "Mais de 5% das transações estão falhando nos últimos 5 minutos"
+
+      - alert: HighMemoryUsage
+        expr: (container_memory_usage_bytes / container_spec_memory_limit_bytes) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Alto uso de memória"
+          description: "Uso de memória acima de 85% nos últimos 5 minutos"
